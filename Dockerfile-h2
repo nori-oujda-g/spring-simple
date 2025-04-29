@@ -1,0 +1,8 @@
+FROM openjdk:latest
+COPY target/simple.jar simple.jar
+COPY src/main/resources/clients1.csv src/main/resources/clients1.csv
+COPY src/main/resources/h2.properties h2.properties
+ENTRYPOINT ["java","-jar","simple.jar","--spring.config.location=./h2.properties"]
+EXPOSE 2000
+#docker build -t springio/gs-spring-boot-docker .
+#docker run -p 8080:8080 springio/gs-spring-boot-docker

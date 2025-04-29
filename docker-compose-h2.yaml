@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile-h2
+    image: nor/spring-simple
+    ports:
+      - "2000:2000"
+    container_name: spring-simple-v1
+    networks:
+      - net-h2
+networks:
+  net-h2:
+    driver: bridge

@@ -1,0 +1,8 @@
+FROM openjdk:latest
+COPY target/simple.jar simple.jar
+COPY src/main/resources/clients1.csv src/main/resources/clients1.csv
+COPY src/main/resources/mysql-docker-deploy.properties mysql-docker-deploy.properties
+ENTRYPOINT ["java","-jar","simple.jar","--spring.config.location=./mysql-docker-deploy.properties"]
+EXPOSE 1200
+#docker build -t springio/gs-spring-boot-docker .
+#docker run -p 8080:8080 springio/gs-spring-boot-docker

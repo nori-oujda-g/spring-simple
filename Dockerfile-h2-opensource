@@ -1,0 +1,19 @@
+FROM openjdk:latest
+COPY /src /src
+COPY pom.xml pom.xml
+COPY /.mvn /.mvn
+COPY mvnw.cmd mvnw.cmd
+COPY mvnw mvnw
+RUN chmod +x mvnw
+RUN ./mvnw dependency:go-offline
+#ENTRYPOINT ["./mvnw", "package"]
+#WORKDIR /app
+
+ENTRYPOINT ["./mvnw","spring-boot:run"]
+#ENTRYPOINT ["mvnw","clean","package"]
+#COPY target/simple.jar simple.jar
+#COPY testo/src/main/resources/clients1.csv target/src/main/resources/clients1.csv
+#ENTRYPOINT ["java","-jar","target/simple.jar"]
+#docker build -t springio/gs-spring-boot-docker .
+#docker run -p 8080:8080 springio/gs-spring-boot-docker
+EXPOSE 2000
