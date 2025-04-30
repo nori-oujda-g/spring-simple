@@ -1,46 +1,51 @@
 version: '3.7'
 services:
-  mysql:
-    image: mysql:latest
-    container_name: mysql-spring
-    # restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mydata
-      # MYSQL_USER: root
-      # MYSQL_PASSWORD: nori
-    ports:
-      - "3306:3306"
-    volumes:
-      - volume_mysql:/var/lib/mysql
-      - ./file.sql:/docker-entrypoint-initdb.d/file.sql
-    networks:
-      - net-mysql
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: phpmyadmin-spring
+  db:
+    image: postgres
+    container_name: postgres-spring
     restart: always
-    environment:
-      PMA_HOST: mysql-spring
-      PMA_USER: root
-      PMA_PASSWORD: root
     ports:
-      - "8082:80"
-    networks:
-      - net-mysql
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: mydata
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      - ./file-postgres.sql:/docker-entrypoint-initdb.d/file-postgres.sql
+#    networks:
+#      - net-postgres-spring
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: spring_pgadmin4
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: abdennour.ouassini1981@hotmail.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+#    networks:
+#      - net-postgres-spring
   backend:
     build:
       context: .
-      dockerfile: Dockerfile-mysql
+      dockerfile: Dockerfile-postgres
     image: nor/spring-simple
     ports:
       - "1200:1200"
     container_name: spring-simple-v1
     restart: always
-    networks:
-      - net-mysql
+#    volumes:
+#      - pg-data:/backend
+#    networks:
+#      - net-postgres-spring
 volumes:
-  volume_mysql:
-networks:
-  net-mysql:
-    driver: bridge
+  pg-data:
+  pgadmin-data:
+#    name: pg-data
+#networks:
+#  net-postgres-spring:
+#    driver: bridge
+#    name: net-postgres-spring

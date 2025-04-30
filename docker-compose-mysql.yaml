@@ -1,0 +1,46 @@
+version: '3.7'
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-spring
+    # restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydata
+      # MYSQL_USER: root
+      # MYSQL_PASSWORD: nori
+    ports:
+      - "3306:3306"
+    volumes:
+      - volume_mysql:/var/lib/mysql
+      - ./file-mysql.sql:/docker-entrypoint-initdb.d/file-mysql.sql
+    networks:
+      - net-mysql
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin-spring
+    restart: always
+    environment:
+      PMA_HOST: mysql-spring
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8082:80"
+    networks:
+      - net-mysql
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile-mysql
+    image: nor/spring-simple
+    ports:
+      - "1200:1200"
+    container_name: spring-simple-v1
+    restart: always
+    networks:
+      - net-mysql
+volumes:
+  volume_mysql:
+networks:
+  net-mysql:
+    driver: bridge
